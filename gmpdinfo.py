@@ -11,8 +11,8 @@ def main():
     with open(json_info, 'r') as json_file:
         info = load(json_file)
 
-    if info['song']['title'] != None:
-        print("  {}, {}, {} | {}:{} ".format(info['song']['title'], info['song']['artist'], info['song']['album'],
+    if info['song']['title'] is not None:
+        print("  {}, {}, {} | {}/{} ".format(info['song']['title'], info['song']['artist'], info['song']['album'],
                                               human_time(info['time']['current']), human_time(info['time']['total'])))
 
 
