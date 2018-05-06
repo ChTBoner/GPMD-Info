@@ -136,7 +136,7 @@ def cont_print():
         
         print(string_format(icon, song_info, time))
 
-        sleep(0.3)
+        sleep(1)
 
 
 def single_print():
