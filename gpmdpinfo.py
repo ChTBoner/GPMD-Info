@@ -2,7 +2,6 @@
 
 from getpass import getuser
 from json import load
-# from helpers import json_location, human_time, gpm_run_check
 from time import sleep
 from sys import argv
 from subprocess import getoutput
