@@ -116,6 +116,9 @@ def cont_print():
 
         song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
 
+        if "rotate" in argv:
+            song_info = "{} | {}".format(song_info[i:], song_info[:i])
+
         if i < len(song_info):
             i += 1
         else:
@@ -124,8 +127,6 @@ def cont_print():
         if "clear" in argv:
             print("\033[H\033[J")
 
-        if "rotate" in argv:
-            song_info = "{} | {}".format(song_info[i:], song_info[:i])
         if "short" in argv:
             song_info = song_info[0:20]
         
