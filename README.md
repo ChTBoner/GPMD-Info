@@ -23,8 +23,13 @@ ex:
 ### Options
 
 "cont" will continuously display the song info
+
 "clear" will clear the terminal every loop
+
 "rotate" song info will rotate from right to left.
+
 "shorttime" only display the current time playing time
+
 "notime" doesn't display the time.
+
 "short" displays only the 20 first chars on the song info
