@@ -3,7 +3,7 @@
 from getpass import getuser
 from json import load
 from time import sleep
-from sys import argv
+from sys import argv, stdout
 from subprocess import getoutput
 from platform import system
 
@@ -135,7 +135,7 @@ def cont_print():
         time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
         
         print(string_format(icon, song_info, time))
-
+        stdout.flush()
         sleep(1)
 
 
