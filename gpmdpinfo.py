@@ -114,28 +114,28 @@ def cont_print():
                 current_song.album = info['song']['album']
                 i = 0
 
-        song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
+            song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
 
-        if "rotate" in argv:
-            song_info = "{} | {}".format(song_info[i:], song_info[:i])
+            if "rotate" in argv:
+                song_info = "{} | {}".format(song_info[i:], song_info[:i])
 
-        if i < len(song_info):
-            i += 1
-        else:
-            i = 0
+            if i < len(song_info):
+                i += 1
+            else:
+                i = 0
 
-        if "clear" in argv:
-            print("\033[H\033[J")
+            if "clear" in argv:
+                print("\033[H\033[J")
 
-        if "short" in argv:
-            song_info = song_info[0:20]
-        
-        icon = show_icon()
+            if "short" in argv:
+                song_info = song_info[0:20]
+            
+            icon = show_icon()
 
-        time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
-        
-        print(string_format(icon, song_info, time))
-        stdout.flush()
+            time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
+            
+            print(string_format(icon, song_info, time))
+            stdout.flush()
         sleep(1)
 
 
