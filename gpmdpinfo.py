@@ -150,6 +150,12 @@ def single_print():
     time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
     icon = show_icon()
 
+    if "short" in argv:
+        song_info = song_info[0:20]
+        time = ""
+
+    icon = show_icon()
+
     if info['song']['title'] is not None:
         print(string_format(icon, song_info, time))
 
@@ -165,4 +171,4 @@ if __name__ == '__main__':
     if gpm_run_check():
         main()
     else:
-        print()
+        print(" ")
