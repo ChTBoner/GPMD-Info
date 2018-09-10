@@ -57,6 +57,10 @@ def gpm_run_check():
 
 
 def format_song_info(title, artist, ablum):
+    if title.find('|') != -1:
+        s = list(title)
+        s[title.find('|')] = "-"
+        title = ''.join(s)
     return "{}, {}, {}".format(title, artist, ablum)
 
 
