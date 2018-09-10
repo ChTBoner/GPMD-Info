@@ -76,9 +76,9 @@ def show_icon():
 
 
 def format_time(current, total):
-    time = "| {}/{} ".format(current, total)
+    time = "- {}/{} ".format(current, total)
     if "shorttime" in argv:
-        time = "| {} ".format(current)
+        time = "- {} ".format(current)
     elif "notime" in argv:
         time = ""
 
