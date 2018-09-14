@@ -2,17 +2,16 @@
 
 from getpass import getuser
 from json import load
-from time import sleep
-from sys import argv, stdout
+from sys import argv
 from subprocess import getoutput
 from platform import system
+from requests import get
+import base64
 
 '''
     Finding the correct json file depending on the OS
-    GPMDP only supported on Linux, MacOS and windows
+    GPMDP only supported on Linux, MacOS
 '''
-
-
 def json_location(user):
     dir1 = 'Google Play Music Desktop Player'
     dir2 = 'json_store'
@@ -22,9 +21,6 @@ def json_location(user):
         return "/Users/{0}/Library/Application Support/{1}/{2}/{3}".format(user, dir1, dir2, filename)
     elif system() == 'Linux':
         return "/home/{0}/.config/{1}/{2}/{3}".format(user, dir1, dir2, filename)
-    # elif system() == 'Windows':
-    #     return "%APPDATA%\\{}\\{}\\{}".format(dir1, dir2, filename)
-
 
 '''
     converts time in human readable time
@@ -84,67 +80,7 @@ def format_time(current, total):
 
     return time
 
-
-'''
-    print continuously if "clear or "rotate" option is set
-    "rotate" option will print song info, rotating from right to left
-    "clear" clears the terminal
-'''
-
-
-class CurrentSong:
-    def __init__(self):
-        self.title = ''
-        self.artist = ''
-        self.album = ''
-
-
-def cont_print(json_info):
-    i = 0
-
-    current_song = CurrentSong()
-
-    while True:
-        with open(json_info, 'r') as json_file:
-            info = load(json_file)
-
-        if info['song']['title'] is not None:
-            # reset counter if song changed
-            if info['song']['title'] != current_song.title or \
-                    info['song']['artist'] != current_song.artist or info['song']['album'] != current_song.album:
-                current_song.title = info['song']['title']
-                current_song.artist = info['song']['artist']
-                current_song.album = info['song']['album']
-                i = 0
-
-            song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
-
-            if "rotate" in argv:
-                song_info = "{} | {}".format(song_info[i:], song_info[:i])
-
-            if i < len(song_info):
-                i += 1
-            else:
-                i = 0
-
-            if "clear" in argv:
-                print("\033[H\033[J")
-
-            if "short" in argv:
-                song_info = song_info[0:20]
-            
-            icon = show_icon()
-
-            time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
-            
-            print(string_format(icon, song_info, time))
-            stdout.flush()
-        sleep(1)
-
-
-def single_print(json_info):
-    with open(json_info, 'r') as json_file:
-        info = load(json_file)
+def single_print(info):
 
     song_info = format_song_info(info['song']['title'], info['song']['artist'],info['song']['album'])
 
@@ -160,13 +96,25 @@ def single_print(json_info):
         print(string_format(icon, song_info, time))
 
 
+def print_image(link):
+    image = base64.b64encode(get(link).decode())
+    print(type(image))
+
+    # encoded = base64.b64encode(image).decode('ascii')
+
+    #print("| image=" + base64.b64encode(get(link).content))
+
 def main():
     json_info = json_location(getuser())
 
-    if "cont" in argv or "clear" in argv or "rotate" in argv:
-        cont_print(json_info)
-    else:
-        single_print(json_info)
+    with open(json_info, 'r') as json_file:
+        info = load(json_file)
+
+    single_print(info)
+    print('---')
+    #print_image(info['song']['albumArt'])
+    print('test')
+
 
 
 if __name__ == '__main__':
