@@ -3,24 +3,29 @@
 from getpass import getuser
 from json import load
 from sys import argv
-from subprocess import getoutput
 from platform import system
 from requests import get
 import base64
+import os
+import psutil
+
+APP_NAME = 'Google Play Music Desktop Player'
 
 '''
     Finding the correct json file depending on the OS
     GPMDP only supported on Linux, MacOS
 '''
+
+
 def json_location(user):
-    dir1 = 'Google Play Music Desktop Player'
-    dir2 = 'json_store'
+    json_dir = 'json_store'
     filename = 'playback.json'
 
     if system() == 'Darwin':
-        return "/Users/{0}/Library/Application Support/{1}/{2}/{3}".format(user, dir1, dir2, filename)
+        return os.path.join('/Users', user, 'Library/Application Support', APP_NAME, json_dir, filename)
     elif system() == 'Linux':
-        return "/home/{0}/.config/{1}/{2}/{3}".format(user, dir1, dir2, filename)
+        return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
+
 
 '''
     converts time in human readable time
@@ -45,11 +50,11 @@ def human_time(time_in_ms):
 
 
 def gpm_run_check():
-    command = "ps -Aef | grep -i \"Google Play Music Desktop Player\" | grep -v grep | wc -l"
-    if int(getoutput(command)) > 0:
-        return True
-    else:
-        return False
+    for p in psutil.process_iter():
+        if APP_NAME in p.name():
+            return True
+
+    return False
 
 
 def format_song_info(title, artist, ablum):
@@ -80,10 +85,9 @@ def format_time(current, total):
 
     return time
 
+
 def single_print(info):
-
-    song_info = format_song_info(info['song']['title'], info['song']['artist'],info['song']['album'])
-
+    song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
     time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
 
     if "short" in argv:
@@ -101,8 +105,8 @@ def print_image(link):
     print(type(image))
 
     # encoded = base64.b64encode(image).decode('ascii')
+    # print("| image=" + base64.b64encode(get(link).content))
 
-    #print("| image=" + base64.b64encode(get(link).content))
 
 def main():
     json_info = json_location(getuser())
@@ -111,10 +115,6 @@ def main():
         info = load(json_file)
 
     single_print(info)
-    print('---')
-    #print_image(info['song']['albumArt'])
-    print('test')
-
 
 
 if __name__ == '__main__':

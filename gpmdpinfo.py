@@ -4,8 +4,11 @@ from getpass import getuser
 from json import load
 from time import sleep
 from sys import argv, stdout
-from subprocess import getoutput
 from platform import system
+import os
+import psutil
+
+APP_NAME = 'Google Play Music Desktop Player'
 
 '''
     Finding the correct json file depending on the OS
@@ -14,16 +17,15 @@ from platform import system
 
 
 def json_location(user):
-    dir1 = 'Google Play Music Desktop Player'
-    dir2 = 'json_store'
+    json_dir = 'json_store'
     filename = 'playback.json'
 
     if system() == 'Darwin':
-        return "/Users/{0}/Library/Application Support/{1}/{2}/{3}".format(user, dir1, dir2, filename)
+        return os.path.join('/Users', user, 'Library/Application Support', APP_NAME, json_dir, filename)
     elif system() == 'Linux':
-        return "/home/{0}/.config/{1}/{2}/{3}".format(user, dir1, dir2, filename)
+        return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
     # elif system() == 'Windows':
-    #     return "%APPDATA%\\{}\\{}\\{}".format(dir1, dir2, filename)
+    #     return "%APPDATA%\\{}\\{}\\{}".format(APP_NAME, dir2, filename)
 
 
 '''
@@ -49,11 +51,11 @@ def human_time(time_in_ms):
 
 
 def gpm_run_check():
-    command = "ps -Aef | grep -i \"Google Play Music Desktop Player\" | grep -v grep | wc -l"
-    if int(getoutput(command)) > 0:
-        return True
-    else:
-        return False
+    for p in psutil.process_iter():
+        if APP_NAME in p.name():
+            return True
+
+    return False
 
 
 def format_song_info(title, artist, ablum):
@@ -131,7 +133,7 @@ def cont_print(json_info):
                 print("\033[H\033[J")
 
             if "short" in argv:
-                song_info = song_info[0:20]
+                song_info = song_info[0:50]
             
             icon = show_icon()
 
@@ -146,12 +148,12 @@ def single_print(json_info):
     with open(json_info, 'r') as json_file:
         info = load(json_file)
 
-    song_info = format_song_info(info['song']['title'], info['song']['artist'],info['song']['album'])
+    song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
 
     time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
 
     if "short" in argv:
-        song_info = song_info[0:20]
+        song_info = song_info[0:50]
         time = ""
 
     icon = show_icon()
