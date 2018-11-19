@@ -101,11 +101,8 @@ def single_print(info):
 
 
 def print_image(link):
-    image = base64.b64encode(get(link).decode())
-    print(type(image))
-
-    # encoded = base64.b64encode(image).decode('ascii')
-    # print("| image=" + base64.b64encode(get(link).content))
+    encoded_image = base64.b64encode(get(link).content).decode()
+    print("| image=" + encoded_image + "imageWidth=200 imageHeight=200")
 
 
 def main():
@@ -115,6 +112,12 @@ def main():
         info = load(json_file)
 
     single_print(info)
+
+    print('---')
+    print_image(info['song']["albumArt"])
+    print('---')
+    if info['songLyrics'] is not None and info['songLyrics'] != '':
+        print(info['songLyrics'])
 
 
 if __name__ == '__main__':
