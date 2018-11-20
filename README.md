@@ -5,6 +5,7 @@ I might work on Windows if there's any personal need or external demand
 
 Originally designed to be called in polybar and my zsh powerline.
 
+
 ## Usage
 
 With no options passed, will just print the current playing song, if GPMDP is running and a song playing.
