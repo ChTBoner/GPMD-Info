@@ -28,6 +28,7 @@ import requests
 
 APP_NAME = 'Google Play Music Desktop Player'
 MAX_INFO_LEN = 30
+IMAGE_SIZE = 150
 
 
 def json_location(user):
@@ -107,7 +108,7 @@ def get_status(status):
 def print_image(url):
     """ get the base64 data from the image url """
     base_image = base64.b64encode(requests.get(url).content).decode()
-    print('| image={}'.format(base_image))
+    print('| image={} imageWidth={} imageHeight={}'.format(base_image, IMAGE_SIZE, IMAGE_SIZE))
 
 
 def main():
