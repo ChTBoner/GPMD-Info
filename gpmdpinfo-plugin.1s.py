@@ -50,7 +50,7 @@ def gpm_run_check():
     """ Run program only if google play music is up. """
 
     for p in psutil.process_iter():
-        if p.name() == APP_NAME:
+        if APP_NAME in p.name():
             return True
 
     return False
@@ -133,9 +133,9 @@ def main():
     print("Artist:  {}".format(info['song']['artist']))
     print("Album:   {}".format(info['song']['album']))
 
-    if info['song']['albumArt'] is not None:
-        print('---')
-        print_image(info['song']['albumArt'])
+#    if info['song']['albumArt'] is not None:
+#        print('---')
+#        print_image(info['song']['albumArt'])
 
     #  if lyrics are available in the json file, print them in the dropdown menu if not empty
     if info['songLyrics'] is not None and info['songLyrics'] != '':

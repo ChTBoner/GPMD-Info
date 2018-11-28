@@ -66,8 +66,8 @@ def format_song_info(title, artist, ablum):
     return "{}, {}, {}".format(title, artist, ablum)
 
 
-def string_format(icon, song_info, time):
-    return " {}{} {}".format(icon, song_info, time)
+def string_format(icon, status, song_info, time):
+    print(" {} {} {} {}".format(icon, status, song_info, time))
 
 
 def show_icon():
@@ -85,6 +85,15 @@ def format_time(current, total):
         time = ""
 
     return time
+
+
+def get_status(status):
+    """ returns the correct icon if a song is playing or in pause"""
+
+    if status is False:
+        return '❚❚'
+    else:
+        return '▶'
 
 
 '''
@@ -134,12 +143,10 @@ def cont_print(json_info):
 
             if "short" in argv:
                 song_info = song_info[0:50]
-            
-            icon = show_icon()
 
             time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
             
-            print(string_format(icon, song_info, time))
+            string_format(show_icon(), get_status(info['playing']), song_info, time)
             stdout.flush()
         sleep(1)
 
@@ -159,7 +166,7 @@ def single_print(json_info):
     icon = show_icon()
 
     if info['song']['title'] is not None:
-        print(string_format(icon, song_info, time))
+        string_format(icon, get_status(info['playing']), song_info, time)
 
 
 def main():
