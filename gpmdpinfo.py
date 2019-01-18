@@ -13,6 +13,7 @@ APP_NAME = 'Google Play Music Desktop Player'
 '''
     Finding the correct json file depending on the OS
     GPMDP only supported on Linux, MacOS and windows
+    Be careful if 
 '''
 
 
@@ -23,9 +24,14 @@ def json_location(user):
     if system() == 'Darwin':
         return os.path.join('/Users', user, 'Library/Application Support', APP_NAME, json_dir, filename)
     elif system() == 'Linux':
-        return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
+        # runs in flatpack
+        if os.path.isfile(os.path.join('/home', user, '.var/app/com.googleplaymusicdesktopplayer.GPMDP', 'config', APP_NAME, json_dir, filename)):
+            return os.path.join('/home', user, '.var/app/com.googleplaymusicdesktopplayer.GPMDP', 'config', APP_NAME, json_dir, filename)
+        else:
+            return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
     # elif system() == 'Windows':
     #     return "%APPDATA%\\{}\\{}\\{}".format(APP_NAME, dir2, filename)
+    return "OS not supported yet"
 
 
 '''
