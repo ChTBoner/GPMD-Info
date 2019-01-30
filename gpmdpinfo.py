@@ -65,15 +65,19 @@ def gpm_run_check():
 
 
 def format_song_info(title, artist, ablum):
-    if title.find('|') != -1:
-        s = list(title)
-        s[title.find('|')] = "-"
-        title = ''.join(s)
+
+    for arg in argv:
+        if arg.isdigit():
+            size = int(arg)
+            if len(title) > size:
+                title = title[0:size-3] + '...'
     return "{}, {}, {}".format(title, artist, ablum)
 
 
-def string_format(icon, status, song_info, time):
-    print(" {} {} {} {}".format(icon, status, song_info, time))
+def string_format(icon, status, title, artist, album, time):
+    str_len = len(icons), len(status), title, artist, album, time)
+    #print(" {} {} {} {}".format(icon, status, song_info, time))
+    #print(len(" {} {} {} {}".format(icon, status, song_info, time)))
 
 
 def show_icon():
@@ -161,28 +165,30 @@ def single_print(json_info):
     with open(json_info, 'r') as json_file:
         info = load(json_file)
 
-    song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
-
-    time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
-
-    if "short" in argv:
-        song_info = song_info[0:50]
-        time = ""
-
-    icon = show_icon()
-
     if info['song']['title'] is not None:
-        string_format(icon, get_status(info['playing']), song_info, time)
+        # song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
+
+        time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
+
+        string_format(show_icon(),
+                      get_status(info['playing']),
+                      info['song']['title'],
+                      info['song']['artist'],
+                      info['song']['album'],
+                      format_time(human_time(info['time']['current']), human_time(info['time']['total']))
+                )
 
 
 def main():
-    json_info = json_location(getuser())
-
-    if "cont" in argv or "clear" in argv or "rotate" in argv:
-        cont_print(json_info)
-    else:
-        single_print(json_info)
-
+    try:
+        json_info = json_location(getuser()) 
+        if "cont" in argv or "clear" in argv or "rotate" in argv:
+            cont_print(json_info)
+        else:
+            single_print(json_info)
+    except:
+        return 0
+    
 
 if __name__ == '__main__':
     if gpm_run_check():

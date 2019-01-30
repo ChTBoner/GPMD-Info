@@ -4,6 +4,7 @@ Only supports MacOS and Linux platforms for now
 I might work on Windows if there's any personal need or external demand
 
 Originally designed to be called in polybar and my zsh powerline.
+The plugin version can be used in any command launcher (Argos in Gnome, BitBar on MacOs, Command Output on KDE)
 
 
 ## Usage
@@ -34,3 +35,5 @@ ex:
 "notime" doesn't display the time.
 
 "short" displays only the 20 first chars on the song info
+
+To limit the size of the output, an integer can be passed.
