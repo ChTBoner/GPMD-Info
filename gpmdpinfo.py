@@ -64,20 +64,30 @@ def gpm_run_check():
     return False
 
 
-def format_song_info(title, artist, ablum):
-
-    for arg in argv:
-        if arg.isdigit():
-            size = int(arg)
-            if len(title) > size:
-                title = title[0:size-3] + '...'
-    return "{}, {}, {}".format(title, artist, ablum)
+def format_song_info(title, artist, album, chars_to_remove):
+    # not cutting already short data
+    if chars_to_remove > 0:
+        average = int((len(title) + len(artist) + len(album)) / 3)
+        print("av", average)
+    return "{}, {}, {}".format(title, artist, album)
 
 
 def string_format(icon, status, title, artist, album, time):
-    str_len = len(icons), len(status), title, artist, album, time)
-    #print(" {} {} {} {}".format(icon, status, song_info, time))
-    #print(len(" {} {} {} {}".format(icon, status, song_info, time)))
+    chars_to_remove = 0
+    for arg in argv:
+        if arg.isdigit():
+            size = int(arg)
+            str_len = len(icon) + len(status) + len(title) + len(artist) + len(album) + len(time) + 3
+            print("str_len", str_len)
+            if str_len > size:
+                # how much str too long
+                song_info_len = size - len(icon) - len(status) - len(time) - 3
+                print("song_info_len", song_info_len)
+                chars_to_remove = (len(title) + len(artist) + len(album)) - song_info_len
+                print("chars_to_remove", chars_to_remove)
+
+    print(" {} {} {} {}".format(icon, status, format_song_info(title, artist, album, chars_to_remove), time))
+    # print(len(" {} {} {} {}".format(icon, status, song_info, time)))
 
 
 def show_icon():
@@ -155,8 +165,14 @@ def cont_print(json_info):
                 song_info = song_info[0:50]
 
             time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
-            
-            string_format(show_icon(), get_status(info['playing']), song_info, time)
+
+            string_format(show_icon(),
+                          get_status(info['playing']),
+                          info['song']['title'],
+                          info['song']['artist'],
+                          info['song']['album'],
+                          format_time(human_time(info['time']['current']), human_time(info['time']['total']))
+                          )
             stdout.flush()
         sleep(1)
 

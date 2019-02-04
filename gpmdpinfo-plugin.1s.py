@@ -32,18 +32,20 @@ IMAGE_SIZE = 150
 
 
 def json_location(user):
-    """
-    Finding the correct json file depending on the OS
-    GPMDP only supported on Linux, MacOS
-    """
-
     json_dir = 'json_store'
     filename = 'playback.json'
 
     if system() == 'Darwin':
         return os.path.join('/Users', user, 'Library/Application Support', APP_NAME, json_dir, filename)
     elif system() == 'Linux':
-        return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
+        # runs in flatpack
+        if os.path.isfile(os.path.join('/home', user, '.var/app/com.googleplaymusicdesktopplayer.GPMDP', 'config', APP_NAME, json_dir, filename)):
+            return os.path.join('/home', user, '.var/app/com.googleplaymusicdesktopplayer.GPMDP', 'config', APP_NAME, json_dir, filename)
+        else:
+            return os.path.join('/home', user, '.config', APP_NAME, json_dir, filename)
+    # elif system() == 'Windows':
+    #     return "%APPDATA%\\{}\\{}\\{}".format(APP_NAME, dir2, filename)
+    return "OS not supported yet"
 
 
 def gpm_run_check():
