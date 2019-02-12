@@ -186,6 +186,9 @@ def main():
 
 if __name__ == '__main__':
     if gpm_run_check():
-        main()
+        try:
+            main()
+        except Exception:
+            print("")
     else:
         print(" ")
