@@ -60,16 +60,34 @@ def gpm_run_check():
     for p in psutil.process_iter():
         if APP_NAME in p.name():
             return True
-
     return False
+
+
+def truncate(string, width):
+    if len(string) > width:
+        string = string[:width-3] + '...'
+    return string
 
 
 def format_song_info(title, artist, album, chars_to_remove):
     # not cutting already short data
     if chars_to_remove > 0:
+        array = (title, artist, album)
         average = int((len(title) + len(artist) + len(album)) / 3)
         print("av", average)
+        for item in array:
+            if len(item) > average:
+                print(item, int(chars_to_remove/3))
     return "{}, {}, {}".format(title, artist, album)
+
+
+def resize_song_info(size, icon, status, title, artist, album, time):
+    song_info_len = size - len(icon) - len(status) - len(time) - 3
+    chars_to_remove = (len(title) + len(artist) + len(album)) - song_info_len
+    print("song_info_len", song_info_len)
+    print("chars_to_remove", chars_to_remove)
+    #
+    # print(title[0:int(song_info_len/3)])
 
 
 def string_format(icon, status, title, artist, album, time):
@@ -78,13 +96,12 @@ def string_format(icon, status, title, artist, album, time):
         if arg.isdigit():
             size = int(arg)
             str_len = len(icon) + len(status) + len(title) + len(artist) + len(album) + len(time) + 3
+            song_info_len = size - len(icon) - len(status) - len(time) - 3
+            chars_to_remove = (len(title) + len(artist) + len(album)) - song_info_len
+
             print("str_len", str_len)
             if str_len > size:
-                # how much str too long
-                song_info_len = size - len(icon) - len(status) - len(time) - 3
-                print("song_info_len", song_info_len)
-                chars_to_remove = (len(title) + len(artist) + len(album)) - song_info_len
-                print("chars_to_remove", chars_to_remove)
+                resize_song_info(size, icon, status, title, artist, album, time)
 
     print(" {} {} {} {}".format(icon, status, format_song_info(title, artist, album, chars_to_remove), time))
     # print(len(" {} {} {} {}".format(icon, status, song_info, time)))
@@ -184,7 +201,7 @@ def single_print(json_info):
     if info['song']['title'] is not None:
         # song_info = format_song_info(info['song']['title'], info['song']['artist'], info['song']['album'])
 
-        time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
+        # time = format_time(human_time(info['time']['current']), human_time(info['time']['total']))
 
         string_format(show_icon(),
                       get_status(info['playing']),
